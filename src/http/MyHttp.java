@@ -30,14 +30,14 @@ public class MyHttp {
 		//URLConnection 
 		conn = (HttpURLConnection)url.openConnection();
 		
-		conn.setRequestMethod("POST");  //相当于: method=POST
+		conn.setRequestMethod("GET");  //相当于: method=POST
 		conn.setDoOutput( true );       //提交表单的参数 ---> true
 		
 		conn.setRequestProperty("Connection", "Keep-Alive");  
 		conn.setRequestProperty("Charset", "UTF-8");
 		conn.setRequestProperty("Content-Type",
 			"application/x-www-form-urlencoded");
-		sendData( conn );
+//		sendData( conn );
 	}
 	private void sendData( HttpURLConnection conn )
 			throws IOException{
@@ -68,10 +68,13 @@ public class MyHttp {
 		//状态码: 200
 		int code = conn.getResponseCode();   //获取服务器返回的状态码
 		InputStream in = null;
+		System.out.println("code:"+code);
 		if( code==HttpURLConnection.HTTP_OK ){
 			in = conn.getInputStream();
 			BufferedReader read = new BufferedReader(
-					new InputStreamReader(in,"GB2312") );
+					new InputStreamReader(in,"UTF-8") );
+//					new InputStreamReader(in,"GB2312") );
+			
 			StringBuffer sb = new StringBuffer();
 			String line = "";
 			while( line!=null ){
@@ -93,7 +96,7 @@ public class MyHttp {
 		addParameter("data", post_data);
 		
 		doConnect();    //做连接操作
-		
+		sendData( conn );
 		String line = getResponse();  //拿返回的数据
 		System.out.println( line );
 		return line;
@@ -107,29 +110,28 @@ public class MyHttp {
 		sb.append(post_data);
 		addParameter("data", sb.toString());
 		doConnect();    //做连接操作
+		sendData( conn );
 		String line = getResponse();  //拿返回的数据
 		System.out.println( line );
 		return line;
 		
 	}
 	public static void main(String[] args) throws Exception {
-		String url1 = "http://172.16.13.246:8080/MvcTest3/Attendance/sumbit";
-//		String url2 = "http://172.16.13.246:8080/MvcTest3/Attendance/sumbit";
-
 		MyHttp http = new MyHttp();
-		http.openConnection( url1 );
-		String[] command = {"studentall#","rfid#","send#"};
-		StringBuffer sb = new StringBuffer(command[1]);
-		String json =  "{\"name\":\"andy\",\"pass\":\"123\"}";
-		sb.append(json);
+		String url2 = "http://gdougym.cn/api/v1/attendances/1";
+//		String url2 = "http://172.16.15.185:8080/MvcTest3/Attendance/sumbit";
+//		String url2 = "http://www.sojson.com/open/api/weather/json.shtml?city=%E5%8C%97%E4%BA%AC";
 		
-		http.addParameter("data",sb.toString());
+		String url = "http://www.sojson.com/open/api/weather/json.shtml?city=%E5%8C%97%E4%BA%AC";
+		http.openConnection( url2 );
+		http.addParameter("name", "andy");
+		http.addParameter("password", "123");
+		http.addParameter("sex", "男");
 		
 		http.doConnect();    //做连接操作
-		
 		String line = http.getResponse();  //拿返回的数据
-		
 		System.out.println( line );
+		System.out.println("");
 		
 	}
 }

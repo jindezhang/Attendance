@@ -23,14 +23,16 @@ public class Check extends Thread {
 	  MyHttp http = null;
 	  ReadRFID rRFID;//读取卡号对象。
 	  String mode;
-	  
+	  KQtime kqjTime;
 
-	public Check( KQGui kqjUI,ReadRFID rRFID
-			  ) {
-				this.rRFID = rRFID;
-				this.kqjUI = kqjUI;
-				mode = "local";
-			}
+	public Check( KQGui kqjUI,ReadRFID rRFID,KQtime kqjTime
+			  ) 
+	{
+		this.kqjTime = kqjTime;		
+		this.rRFID = rRFID;
+		this.kqjUI = kqjUI;
+		mode = "local";
+	}
 	Map<String ,Integer> map_success = new HashMap<String ,Integer>();
 	private boolean mystatus = true;
 	
@@ -47,7 +49,7 @@ public class Check extends Thread {
 		KQJJson kqjJson = new KQJJson();
 		KQtime t = new KQtime();
 		
-		String status_onTime = "准点";	//用于上传给服务器判断学生是否准时考勤。
+		String status_onTime = "0";	//用于上传给服务器判断学生是否考勤状态。准点（0）和迟到（1），缺勤（2）
 		int reset = 0;
 		int reui = 0;
 		while( mystatus ){
@@ -85,6 +87,12 @@ public class Check extends Thread {
 					kqjUI.set_notice("你已经考勤！");
 					continue;
 				}
+				//判断是否迟到。
+				if(kqjTime.isOnTime()){
+					status_onTime = "0";
+				}else{
+					status_onTime = "1";
+				}
 				
 				if(mode.equals("net")){
 					
@@ -104,6 +112,7 @@ public class Check extends Thread {
 					//实现UI更新和上发数据；
 					try {
 //						responsedata = http.deal_http(2, kqjPostGson);
+						
 						responsedata = http.deal_http(2, sd_id);
 						System.out.println("respon = "+responsedata);
 						if(responsedata.equals("1")){
@@ -126,6 +135,9 @@ public class Check extends Thread {
 					reset = t.resetUI_Time();
 					reui = 0;
 				}
+			if(!kqjTime.isOnTime()){
+				kqjUI.set_notice("你已经迟到！");
+			}
 			}
 		System.out.println("考勤结束！");
 		}
