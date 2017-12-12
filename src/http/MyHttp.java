@@ -30,15 +30,33 @@ public class MyHttp {
 		//URLConnection 
 		conn = (HttpURLConnection)url.openConnection();
 		
-		conn.setRequestMethod("GET");  //相当于: method=POST
+		conn.setRequestMethod("POST");  //相当于: method=POST
 		conn.setDoOutput( true );       //提交表单的参数 ---> true
 		
 		conn.setRequestProperty("Connection", "Keep-Alive");  
 		conn.setRequestProperty("Charset", "UTF-8");
 		conn.setRequestProperty("Content-Type",
 			"application/x-www-form-urlencoded");
+//		conn.setRequestProperty("Content-Type",
+//				"application/json");
 //		sendData( conn );
 	}
+	
+	public void doMyConnect() throws IOException{
+		//URLConnection 
+		conn = (HttpURLConnection)url.openConnection();
+		
+		conn.setRequestMethod("GET");  //相当于: method=POST
+		conn.setDoOutput( true );       //提交表单的参数 ---> true
+		
+		conn.setRequestProperty("Connection", "Keep-Alive");  
+		conn.setRequestProperty("Charset", "UTF-8");
+		
+		conn.setRequestProperty("Content-Type",
+				"application/json");
+//		sendData( conn );
+	}
+	
 	private void sendData( HttpURLConnection conn )
 			throws IOException{
 		OutputStream out = conn.getOutputStream();
@@ -59,6 +77,15 @@ public class MyHttp {
 		//截掉最后一个 "&"
 		//变成: name=andy&password=123&sex=男
 		out.write( sb.toString().getBytes() );
+		out.flush();
+		out.close();
+	}
+	
+	private void sendMyData( HttpURLConnection conn, String postdata )
+			throws IOException{
+		OutputStream out = conn.getOutputStream();
+		
+		out.write(postdata.getBytes());
 		out.flush();
 		out.close();
 	}
@@ -93,10 +120,8 @@ public class MyHttp {
 		
 //		String url = "http://172.16.13.246:8080/%E6%A0%A1%E5%86%85%E5%AE%9E%E8%AE%AD17-11-27/text/666.json";
 		
-		addParameter("data", post_data);
-		
-		doConnect();    //做连接操作
-		sendData( conn );
+		doMyConnect();    //做连接操作
+		sendMyData( conn ,post_data);
 		String line = getResponse();  //拿返回的数据
 		System.out.println( line );
 		return line;
@@ -105,7 +130,7 @@ public class MyHttp {
 	
 	public String deal_http(int commands,String post_data) throws Exception{
 		
-		String[] command = {"studentall#","rfid#sx101#","send#sx101#"};
+		String[] command = {"register#","studentAll#sx101#","rfid#sx101#","send#sx101#"};
 		StringBuffer sb = new StringBuffer(command[commands]);
 		sb.append(post_data);
 		addParameter("data", sb.toString());
@@ -118,17 +143,18 @@ public class MyHttp {
 	}
 	public static void main(String[] args) throws Exception {
 		MyHttp http = new MyHttp();
-		String url2 = "http://gdougym.cn/api/v1/attendances/1";
+		String url2 = "http://rj1033/api/v1/attendances/";
 //		String url2 = "http://172.16.15.185:8080/MvcTest3/Attendance/sumbit";
 //		String url2 = "http://www.sojson.com/open/api/weather/json.shtml?city=%E5%8C%97%E4%BA%AC";
 		
 		String url = "http://www.sojson.com/open/api/weather/json.shtml?city=%E5%8C%97%E4%BA%AC";
 		http.openConnection( url2 );
-		http.addParameter("name", "andy");
-		http.addParameter("password", "123");
-		http.addParameter("sex", "男");
 		
-		http.doConnect();    //做连接操作
+		String s = "{\"id\": 1,\"rfid\": \"123456790\",\"squadId\": \"sqd14rj01\",\"lessonId\": 1,\"state\": 20}";
+		
+		
+		http.deal_http(s);
+		
 		String line = http.getResponse();  //拿返回的数据
 		System.out.println( line );
 		System.out.println("");

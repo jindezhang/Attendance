@@ -34,8 +34,8 @@ public class KQtime {
 		this.timeH[0] = 16;
 		this.timeH[1] = 17;
 		
-		this.timeM[0] = 56;
-		this.timeM[1] = 29;
+		this.timeM[0] = 55;
+		this.timeM[1] = 34;
 		
 		kqTimeLong = 2;
 	}
@@ -47,9 +47,9 @@ public class KQtime {
 		
 		timeH = new int[2];
 		timeM = new int[2];
-		this.timeH[0] = 00;
+		this.timeH[0] = 16;
 		this.timeH[1] = 12;
-		this.timeM[0] = 00;
+		this.timeM[0] = 44;
 		this.timeM[1] = 00;
 	}
 	
@@ -161,7 +161,7 @@ public class KQtime {
 		 */
 		int vh = ost[0] - myt[0];
 		int vm = ost[1] + vh*60 -myt[1];
-		if(vm < 0){
+		if(vm <= 0){
 			return true;
 		}else
 			return false;
@@ -192,8 +192,8 @@ public class KQtime {
 		Map<Integer, Integer> timeKQ = getKQTime();
 		int c = -1;
 		int[] timeOS = getOSTime();
-		System.out.println("timeOS="+timeOS[0]);
-		Trace.print(timeOS);
+//		System.out.println("timeOS="+timeOS[0]);
+//		Trace.print(timeOS);
 		
 		for(int i = 0 ;i < timeKQ.size();i++){
 			if(timeKQ.get(timeOS[0]) != null){

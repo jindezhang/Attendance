@@ -40,7 +40,7 @@ public class ProTest {
 		parasInfo[1] = workMode;
 		parasInfo[2] = time;
 		
-		System.out.println("serverIP="+ serverIP);
+		System.out.println("serverUrl="+ serverUrl);
 		System.out.println("serverPort="+ serverPort);
 		System.out.println("time="+ time);		
 		fin.close();
@@ -103,7 +103,7 @@ public class ProTest {
 	
 	@Test
 	public void test(){
-		String path = "src\\config\\config.properties";
+		String path = "src\\config.properties";
 		Map<String,String> paras = new HashMap<String,String>();
 		paras.put("serverIp", "192.168.1.100");
 		paras.put("serverPort", "9090");

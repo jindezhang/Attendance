@@ -1,3 +1,5 @@
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +13,14 @@ import dbutils.Trace;
 public class ThreadTest {
 
 	@SuppressWarnings("deprecation")
-	public static void main(String[] args)
+	public static void main(String[] args) throws UnknownHostException
 	   {
+		System.out.println("IP="+InetAddress.getLocalHost().getHostAddress());
 		String[] s = new String[2];
 		s[1] = "1";
 		s[0] = "0";
 		Trace.print(s);
+		/*
 		ThreadCtrlDemo demow = null;
 		for(int i = 0 ;i<3;i++){
 			demow = new ThreadCtrlDemo("测试线程"+i);
@@ -61,5 +65,6 @@ public class ThreadTest {
 	      System.out.println("终止测试线程...");
 	      demoo.setstatus(false);
 	      System.out.println("主线程终止...");
+	      */
 	   }
 }

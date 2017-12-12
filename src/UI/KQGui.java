@@ -251,7 +251,7 @@ public class KQGui extends JFrame {
 	public void resetInfo(){
 		stu_name.setText("学生姓名");
 		stu_num.setText("学生学号");
-		
+		set_notice("欢迎你。");
 		ImageIcon icon = reduceImg(default_url, width, height);
 		stu_pic.setIcon(icon);
 	}

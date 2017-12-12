@@ -19,6 +19,7 @@ import entity.StudentDao;
 public class Check extends Thread {
 
 	  Map<String,Integer> rfid_list;
+	  String courseid = null;
 	  KQGui kqjUI;
 	  MyHttp http = null;
 	  ReadRFID rRFID;//读取卡号对象。
@@ -36,6 +37,9 @@ public class Check extends Thread {
 	Map<String ,Integer> map_success = new HashMap<String ,Integer>();
 	private boolean mystatus = true;
 	
+	public void setCourseId(String courseid){
+		this.courseid = courseid;
+	}
 
 	@Override
 	public synchronized void run() {
@@ -57,7 +61,6 @@ public class Check extends Thread {
 			//没人刷卡，隔两秒，重置UI；
 			if((t.resetUI_Time() - reset) > 2 && reui == 0){
 				kqjUI.resetInfo();
-				kqjUI.set_notice("欢迎你。");
 				reui = 1;
 			}
 			//考勤过程。
@@ -87,15 +90,16 @@ public class Check extends Thread {
 					kqjUI.set_notice("你已经考勤！");
 					continue;
 				}
-				//判断是否迟到。
-				if(kqjTime.isOnTime()){
-					status_onTime = "0";
-				}else{
-					status_onTime = "1";
-				}
+				
 				
 				if(mode.equals("net")){
 					
+					//判断是否迟到。
+					if(kqjTime.isOnTime()){
+						status_onTime = "0";
+					}else{
+						status_onTime = "1";
+					}
 					//[1] 不在服务器下发名单不能考勤。
 					Integer integer = 0;
 					integer = rfid_list.get(sd_id);
@@ -113,7 +117,9 @@ public class Check extends Thread {
 					try {
 //						responsedata = http.deal_http(2, kqjPostGson);
 						
-						responsedata = http.deal_http(2, sd_id);
+						//老刁。
+						String s = courseid+"#"+sd_id+"#"+status_onTime;
+						responsedata = http.deal_http(3, s);
 						System.out.println("respon = "+responsedata);
 						if(responsedata.equals("1")){
 							//考勤完成

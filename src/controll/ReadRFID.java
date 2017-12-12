@@ -51,7 +51,7 @@ public class ReadRFID implements SerialCallBack {
 				e.printStackTrace();
 			}
 			if(mybuff[2] == 0x00){
-				System.out.println("请求刷卡成功。");
+//				System.out.println("请求刷卡成功。");
 				return true;
 			}else{
 				return false;
@@ -67,13 +67,13 @@ public class ReadRFID implements SerialCallBack {
 			e.printStackTrace();
 		}
 		if(mybuff[2] == 0x00){
-			System.out.println("获取到卡号。");
+//			System.out.println("获取到卡号。");
 			
 			for(int i = 7;i>3; i--){
 				String content = String.format( "%02X", mybuff[i] );
 				sb.append( content );
 			}
-			System.out.println("RFID:0X"+sb);
+//			System.out.println("RFID:0X"+sb);
 			return sb.toString();
 			
 		}else{
@@ -89,6 +89,7 @@ public class ReadRFID implements SerialCallBack {
 			
 			while(!rd.readRequest());
 			String id = rd.getRFID();
+			System.out.println(id);
 		}
 	}
 	

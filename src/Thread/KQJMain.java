@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import UI.KQGui;
+import controll.GetStudent;
 import controll.KQJJson;
 import controll.KQtime;
 import controll.ProTest;
@@ -46,7 +47,7 @@ public class KQJMain {
 		}
 
 		/*
-		 * 读取配置。失败则跳转到手动写入配置信息。并且注册考勤机。
+		 * 读取配置。失败则跳转到手动写入配置信息。若是联网模式，并且注册考勤机和获取全部学生数据。。
 		 * serverurl = paras[0]
 		 * workMode = paras[1]
 		 */
@@ -57,14 +58,20 @@ public class KQJMain {
 				int[] m = proTest.getProM();
 //				kqjTime.setOnTime(h.length, h, m);
 		}while(flet);
-		if(paras[1].equals("local")){
-			kqjURL = null;
-			kqjUI.setMode("本地考勤");
-		}else{
+		if(paras[1].equals("net")){
 			kqjURL = paras[0];
 			http.openConnection(kqjURL);
+			System.out.println("kqjURL:"+kqjURL);
 			kqjUI.setMode("联网考勤");
+//			GetStudent getStudent = new GetStudent(http);
+//			getStudent.saveStudentAll();
+			
+			 
+		}else{
+			kqjURL = null;
+			kqjUI.setMode("本地考勤");
 		}
+		kqjUI.set_notice("初始化成功！");
 		kqjTime.showTime();
 
 		/*
@@ -73,11 +80,11 @@ public class KQJMain {
 		String getJson = null;
 		while(true){
 			
-			check =new Check(kqjUI,rRFID);
+			
 			if(kqjURL != null){
 				//申请学生名单：
 				while(!kqjTime.isGetdata()); 
-				getJson = http.deal_http(1,null);
+				getJson = http.deal_http(2,null);
 				Trace.print(getJson);
 				
 				if(getJson == null){
@@ -85,19 +92,24 @@ public class KQJMain {
 					Thread.sleep(62*1000);
 					continue;
 				}
-				
-				//清空原有数据。
-				rfid_list.clear();
-				//保存学生数据。
-				rfid_list = check.ListToMap(kqjJson.getdata(getJson).getRfid_list());
-				check.setRfid_list(rfid_list);
-				
-				check.setMode(http);;
 			}
 
 			System.out.println("##");
 			//是否开始考勤
 			while(!kqjTime.isOpenKQJ());
+			check =new Check(kqjUI,rRFID,kqjTime);
+			
+			if(kqjURL != null){
+				//清空原有数据。
+				rfid_list.clear();
+				//保存学生数据。
+				rfid_list = check.ListToMap(kqjJson.getdata(getJson).getRfid_list());
+				check.setRfid_list(rfid_list);
+				check.setCourseId(kqjJson.getdata(getJson).getCourseId());
+				
+				check.setMode(http);;
+			}
+			
 			kqjUI.check_Time();
 			check.start();
 			
